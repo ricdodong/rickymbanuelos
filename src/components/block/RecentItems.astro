@@ -2,144 +2,93 @@
 import { getCollection } from "astro:content";
 import { marked } from "marked";
 import ItemCard from "@components/cards/ItemCard.astro";
-import ItemCardSmall from "@components/cards/ItemCardSmall.astro";
-import Intersecting from "@components/common/Intersecting.vue";
-import { Icon } from "astro-icon/components";
+
 import { t } from "@util/translate";
 import { getGridImageSizes, slugify } from "@util/helpers";
 
-const {
-  title,
-  container,
-  template,
-  content,
-  count,
-  page_type,
-  post_tag,
-  portfolio_tag,
-  animate,
-} = Astro.props;
+const { title, content, count, post_tag, style } = Astro.props;
 
 let base_url;
 let posts;
-if (page_type === "blog") {
-  base_url = import.meta.env.BLOG_SLUG;
-  posts = (await getCollection("blog")).sort(
-    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-  );
 
-  if (post_tag && post_tag.length > 0)
-    posts = posts.filter(
-      (post) =>
-        post.data?.tag &&
-        post_tag.some((t) => post.data?.tag && post.data.tag.includes(t)),
-    );
-}
+base_url = import.meta.env.BLOG_SLUG;
+posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
 
-if (page_type === "menu") {
-  base_url = import.meta.env.MENU_SLUG;
-  posts = (await getCollection("menu")).sort(
-    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+if (post_tag && post_tag.length > 0)
+  posts = posts.filter(
+    (post) =>
+      post.data?.tag &&
+      post_tag.some((t) => post.data?.tag && post.data.tag.includes(t)),
   );
-}
-
-if (page_type === "project") {
-  base_url = import.meta.env.PORTFOLIO_SLUG;
-  posts = (await getCollection("project")).sort(
-    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-  );
-  if (portfolio_tag && portfolio_tag.length > 0)
-    posts = posts.filter(
-      (post) =>
-        post.data?.tag &&
-        portfolio_tag.some((t) => post.data?.tag && post.data.tag.includes(t)),
-    );
-}
 
 if (count && count > 0) posts = posts.slice(0, count);
 
-const sizes = getGridImageSizes(container);
+const sizes = getGridImageSizes("lg");
 ---
 
-<Intersecting client:visible className="w-full">
-  <div
-    class={`recent-blogs grid gap-8 fade-up container-${container || "md"} `}
-  >
-    {
-      template === "grid" && (
-        <>
-          <h2 class="title-sm" id={slugify(title)}>
-            {title}
-          </h2>
-          {content && <div class="richtext" set:html={marked.parse(content)} />}
-          <div
-            class={`auto-grid-${container || "md"} gap-4`}
-            data-pagefind-ignore="all"
-          >
-            {posts.map((post, index) => (
-              <div style={`--animation-delay: ${(index + 1) * 150}ms`}>
-                <ItemCard
-                  content={post}
-                  base_url={base_url}
-                  {sizes}
-                  {animate}
-                />
-              </div>
-            ))}
-            <a
-              href={`/${base_url}`}
-              aria-label={t("show_more")}
-              class="fade-up surface-primary group grid aspect-square h-full w-full place-items-center py-8 transition-colors duration-500 hover:bg-dark"
-            >
-              <span class="subtitle">
-                <Icon
-                  name="right"
-                  class="w-20 transition-transform duration-500 group-hover:scale-110"
-                />
-              </span>
-            </a>
-          </div>
-        </>
-      )
-    }
-
-    {
-      template === "list" && (
-        <div class="grid gap-14 md:grid-cols-2">
-          <div>
-            <div class="sticky top-8 grid gap-4">
-              <h2 class="title-sm" id={slugify(title)}>
-                {title}
-              </h2>
-              {content && (
-                <div class="richtext" set:html={marked.parse(content)} />
-              )}
-            </div>
-          </div>
-          <ul class={`bloglist grid gap-4`} data-pagefind-ignore="all">
-            {posts.map((post, index) => (
-              <li style={`--animation-delay: ${(index + 1) * 150}ms`}>
-                <ItemCardSmall content={post} base_url={base_url} {animate} />
-              </li>
-            ))}
-            <li class="fade-up flex justify-end">
-              <a
-                href={`/${base_url}`}
-                aria-label={t("show_more")}
-                class=" btn btn-icon surface-primary mr-2"
-              >
-                <Icon
-                  name="right"
-                  class="w-6 transition-transform duration-500 group-hover:scale-110"
-                />
-              </a>
+<div class={`recent-blogs grid gap-8 fade-up container-lg `}>
+  <div class="grid gap-14 lg:grid-cols-3">
+    <div>
+      <div class="sticky top-14 grid gap-4">
+        <h2 class="title-sm" id={slugify(title)}>
+          {title}
+        </h2>
+        {content && <div class="richtext" set:html={marked.parse(content)} />}
+      </div>
+    </div>
+    <div class="lg:col-span-2">
+      <ul
+        class={`grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 `}
+      >
+        {
+          posts.map((post, index) => (
+            <li style={`--animation-delay: ${(index + 1) * 150}ms`}>
+              <ItemCard
+                content={post}
+                base_url={base_url}
+                {sizes}
+                animate={style.animate}
+              />
             </li>
-          </ul>
-        </div>
-      )
-    }
+          ))
+        }
+      </ul>
+      <div class="fade-up flex justify-end">
+        <a href={`/${base_url}`} class="btn group mr-2">
+          {t("show_more")}
+          <svg
+            class="-mr-1 h-5 w-5"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            xml:space="preserve"
+            style="enable-background: new 0 0 12 12"
+            viewBox="0 0 12 12"
+          >
+            <g
+              class="-translate-x-[20%] transition-transform duration-300 group-hover:translate-x-0"
+            >
+              <path
+                d="M9.2 6.4 6.4 9.1c-.1.1-.1.4 0 .5s.4.1.5 0l3.4-3.4c.1-.1.1-.4 0-.5L7 2.4c-.1-.1-.4-.1-.5 0-.1.1-.1.4 0 .5l2.7 2.7c.4.4.4.4 0 .8z"
+                fill="currentColor"
+                stroke="currentColor"
+                stroke-width="0.5"></path>
+              <g>
+                <path
+                  class="origin-right -translate-x-[8%] scale-x-0 transition-transform duration-300 group-hover:scale-x-75"
+                  d="M9.6 5.6H1.9c-.2 0-.3.2-.3.4s.2.4.4.4h7.7c.2 0 .4-.2.4-.4s-.3-.4-.5-.4z"
+                  fill="currentColor"
+                  stroke="currentColor"
+                  stroke-width="0.5"></path>
+              </g>
+            </g>
+          </svg>
+        </a>
+      </div>
+    </div>
   </div>
-</Intersecting>
+</div>
 
 <style lang="postcss">
 .recent-blogs ul.bloglist {

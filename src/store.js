@@ -1,15 +1,19 @@
 import { atom } from "nanostores";
 
-export const activeProduct = atom({
-  thumbnail: null,
-  name: "",
-  price: "",
+export const showVideo = atom({
+  id: null,
+  show: false,
 });
 
-export const productVariations = atom([]);
-export const productExtraPrice = atom(0);
-export const showContact = atom(false);
+export const showPopup = atom({
+  type: null,
+  show: false,
+});
 
-export function setCookie(value) {
-  cookies.set(value);
-}
+export const showDialog = atom({
+  type: null,
+  link: null,
+  show: false,
+});
+
+export const showFaq = atom(null);

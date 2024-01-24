@@ -1,5 +1,9 @@
+import { encode } from "https://deno.land/std/encoding/base64.ts";
+
 let { POSTMARK_SERVER_TOKEN, FROM_EMAIL_ADDRESS, TO_EMAIL_ADDRESS } =
   Deno.env.toObject();
+
+ 
 
 export default async (request, context) => {
   if (!POSTMARK_SERVER_TOKEN || !FROM_EMAIL_ADDRESS || !TO_EMAIL_ADDRESS)
@@ -10,6 +14,7 @@ export default async (request, context) => {
   const { email, name, message, topicEmail } = await request.json();
 
   if (!email || email === "") return Response.json({ error: "Missing email" });
+ 
 
   const headers = {
     "Access-Control-Allow-Origin": "*",

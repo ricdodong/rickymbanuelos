@@ -14,29 +14,85 @@ export default async (request, context) => {
     Authorization: `Bearer ${MAILCHIMP_API_KEY}`,
   };
 
-  const { email } = await request.json();
+  const {
+    email,
+    list,
+    first_name,
+    last_name,
+    include_main_list,
+    status,
+    tags,
+  } = await request.json();
+
   if (!email || email === "") return Response.json({ error: "Missing email" });
 
-  const data = JSON.stringify({
-    email_address: email,
-    status: "pending",
-  });
+  let lists = [];
+
+  if (list) {
+    lists = [
+      ...lists,
+      {
+        url: `https://${MAILCHIMP_SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${list}/members/${email.toLowerCase()}`,
+        data: JSON.stringify({
+          email_address: email,
+          status_if_new: status,
+          merge_fields: {
+            FNAME: first_name,
+            LNAME: last_name,
+          },
+
+          tags: tags,
+        }),
+      },
+    ];
+  }
+  if (include_main_list || !list) {
+    lists = [
+      ...lists,
+      {
+        url: `https://${MAILCHIMP_SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${MAILCHIMP_LIST_ID}/members/${email.toLowerCase()}`,
+        data: JSON.stringify({
+          email_address: email,
+          merge_fields: {
+            FNAME: first_name,
+            LNAME: last_name,
+          },
+          status_if_new: "pending",
+          tags: tags,
+        }),
+      },
+    ];
+  }
 
   try {
-    const resp = await fetch(
-      `https://${MAILCHIMP_SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${MAILCHIMP_LIST_ID}/members/`,
-      {
-        method: "POST",
-        headers: headers,
-        body: data,
-      },
+    const result = await Promise.all(
+      lists.map(async (data) => {
+        const resp = await fetch(data.url, {
+          method: "PUT",
+          headers: headers,
+          body: data.data,
+        });
+        return resp.json();
+      }),
     );
-    let response = await resp.json();
+
+    if (result.length === 1) {
+      const response = result[0];
+
+      return Response.json({
+        statusCode: 200,
+        status: response.status,
+      });
+    }
+
+    const allSubscribed = result.every(
+      (response) =>
+        response.status === "subscribed" || response.status === "pending",
+    );
 
     return Response.json({
       statusCode: 200,
-      status: response?.title ? response?.title : response?.status,
-      email: response?.email_address,
+      status: allSubscribed ? "pending" : "error",
     });
   } catch (e) {
     console.log("ERROR[]", e);

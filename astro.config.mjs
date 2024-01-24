@@ -1,6 +1,6 @@
 import { defineConfig } from "astro/config";
 import { astroImageTools } from "astro-imagetools";
-import icon from "astro-icon";
+
 import mdx from "@astrojs/mdx";
 import m2dx from "astro-m2dx";
 import sitemap from "@astrojs/sitemap";
@@ -12,8 +12,8 @@ const remarkEmbedder = fauxRemarkEmbedder.default;
 const oembedTransformer = fauxOembedTransformer.default;
 import vue from "@astrojs/vue";
 /** @type {import('astro-m2dx').Options} */
-import prefetch from "@astrojs/prefetch";
-import compress from "astro-compress";
+import icon from "astro-icon";
+
 const m2dxOptions = {
   exportComponents: true,
   unwrapImages: true,
@@ -22,7 +22,7 @@ const m2dxOptions = {
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://rickymbanuelos.click",
+  site: "https://starfunnel.unfolding.io",
   integrations: [
     icon(),
     mdx({}),
@@ -32,14 +32,6 @@ export default defineConfig({
       appEntrypoint: "/src/pages/_app",
     }),
     astroImageTools,
-    prefetch(),
-    compress({
-      CSS: true,
-      HTML: false,
-      Image: false,
-      JavaScript: true,
-      SVG: true,
-    }),
   ],
   markdown: {
     extendDefaultPlugins: true,
@@ -65,17 +57,16 @@ export default defineConfig({
   vite: {
     build: {
       rollupOptions: {
-        external: [
-          "/_pagefind/pagefind.js",
-          "/_pagefind/pagefind-ui.js",
-          "/_pagefind/pagefind-ui.css",
-        ],
+        external: [],
       },
       assetsInlineLimit: 10096,
     },
   },
   build: {
     inlineStylesheets: "always",
+  },
+  prefetch: {
+    defaultStrategy: "viewport",
   },
   scopedStyleStrategy: "attribute",
 });

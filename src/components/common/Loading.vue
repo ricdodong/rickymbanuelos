@@ -1,6 +1,6 @@
 <template>
   <div
-    class="loading absolute inset-0 grid place-items-center text-primary backdrop-opacity-50"
+    class="loading absolute inset-0 z-20 grid cursor-default place-items-center text-primary backdrop-blur-sm backdrop-opacity-75"
     v-if="loading"
   >
     <svg
@@ -55,13 +55,4 @@ const props = defineProps({
 });
 </script>
 
-<style>
-.loading {
-  background: radial-gradient(
-    circle,
-    rgba(0, 0, 0, 0.3) 0%,
-    rgba(0, 0, 0, 0.1) 11%,
-    rgba(0, 0, 0, 0) 25%
-  );
-}
-</style>
+ 

@@ -1,4 +1,9 @@
-import { toolbarButtons, blocks, buttons, style } from "./common.mjs";
+import {
+  toolbarButtons,
+  blocks,
+  buttons,
+  toolbarButtonsInline,
+} from "./common.mjs";
 
 import { t } from "@util/translate";
 export const page = {
@@ -16,10 +21,10 @@ export const page = {
   },
   fields: [
     {
-      label: t("title"),
+      label: t("title_seo"),
       name: "title",
       widget: "string",
-      pattern: [".{5,}", "Must have at least 20 characters"],
+      pattern: [".{5,}", "Must have at least 5 characters"],
     },
     {
       label: t("description_seo"),
@@ -29,10 +34,214 @@ export const page = {
     },
 
     {
-      label: t("hero_intro"),
-      name: "intro",
-      widget: "text",
-      required: false,
+      name: "hero",
+      label: t("hero"),
+      widget: "object",
+      collapsed: true,
+      fields: [
+        {
+          label: t("title"),
+          name: "title",
+          widget: "markdown",
+          required: false,
+
+          toolbar_buttons: toolbarButtonsInline,
+          show_raw: true,
+        },
+        {
+          label: t("intro"),
+          name: "intro",
+          widget: "markdown",
+          required: false,
+
+          toolbar_buttons: toolbarButtonsInline,
+          show_raw: true,
+        },
+        {
+          name: "style",
+          label: t("style"),
+          widget: "object",
+          summary: "{{template}} ",
+          collapsed: true,
+          fields: [
+            {
+              name: "layout",
+              label: t("layout"),
+              widget: "select",
+              options: ["row", "column"],
+              default: "column",
+            },
+
+            {
+              name: "background",
+              label: t("background"),
+              widget: "select",
+              options: ["gradient", "plain"],
+              default: "image",
+            },
+
+            {
+              name: "surface",
+              label: t("surface"),
+              multiple: false,
+              widget: "relation",
+              collection: "config",
+              file: "style",
+              search_fields: ["surface.*.name"],
+              display_fields: ["surface.*.name"],
+              value_field: "surface.*.class",
+              options_length: 50,
+              required: false,
+            },
+            {
+              name: "pattern",
+              label: t("pattern"),
+              widget: "relation",
+              collection: "config",
+              required: false,
+              file: "style",
+              search_fields: ["patterns.*.name"],
+              display_fields: ["patterns.*.name"],
+              options_length: 50,
+              value_field: "patterns.*.pattern",
+            },
+
+            {
+              label: t("class"),
+              name: "class",
+              widget: "string",
+              required: false,
+            },
+
+            {
+              name: "container",
+              label: t("container_size"),
+              widget: "select",
+              options: ["sm", "md", "lg", "xl", "full", "none"],
+              default: "xl",
+            },
+          ],
+        },
+        {
+          name: "media",
+          label: t("media"),
+          widget: "object",
+          summary: "{{template}} ",
+          collapsed: true,
+          fields: [
+            {
+              label: t("image"),
+              name: "thumbnail",
+              widget: "image",
+              media_folder: "/src/assets",
+              required: false,
+            }, //, , 1, ,
+            {
+              name: "aspect",
+              label: t("aspect_ratio"),
+              widget: "select",
+              options: [
+                {
+                  label: "Landscape 21c/9",
+                  value: 2.333,
+                },
+                {
+                  label: "Landscape 16/9",
+                  value: 1.777,
+                },
+                {
+                  label: "Landscape 5/4",
+                  value: 1.25,
+                },
+                {
+                  label: "square",
+                  value: 1,
+                },
+                {
+                  label: "Portrait 4/5",
+                  value: 0.8,
+                },
+                {
+                  label: "Portrait 9/16",
+                  value: 0.5625,
+                },
+              ],
+              default: 1.777,
+              required: false,
+            },
+            {
+              label: t("background_image"),
+              name: "background_image",
+              widget: "image",
+              media_folder: "/src/assets",
+              required: false,
+            },
+            {
+              name: "image_opacity",
+              label: t("background_image_opacity"),
+              widget: "select",
+              options: [
+                "0.1",
+                "0.2",
+                "0.3",
+                "0.4",
+                "0.5",
+                "0.6",
+                "0.7",
+                "0.8",
+                "0.9",
+                "1",
+              ],
+              default: "80",
+              required: false,
+            },
+
+            {
+              label: t("video_preview"),
+              name: "video_preview",
+              choose_url: true,
+              media_folder: "/public/video",
+              public_folder: "/video",
+              hint: t("video_preview_hint"),
+              widget: "file",
+              required: false,
+              pattern: [
+                "[^\\s]+(.*?)\\.(MP4|mp4)$",
+                "please upload a valid MP4 video",
+              ],
+              media_library: {
+                max_file_size: 312000,
+              },
+            },
+
+            {
+              name: "embed",
+              label: t("video_embed"),
+              widget: "select",
+              options: ["youtube", "vimeo"],
+              required: false,
+            },
+
+            {
+              label: t("video_id"),
+              name: "video_id",
+              hint: t("video_id_hint"),
+              widget: "string",
+              required: false,
+            },
+          ],
+        },
+        {
+          name: "buttons",
+          label: t("buttons"),
+          label_singular: "Button",
+          widget: "list",
+          collapsed: true,
+          summary: "{{label}} | {{href}}",
+          fields: buttons.fields,
+          required: false,
+        },
+      ],
     },
 
     {
@@ -44,75 +253,23 @@ export const page = {
       toolbar_buttons: toolbarButtons,
       show_raw: true,
     },
-    {
-      name: "hero_buttons",
-      label: t("hero_buttons"),
-      label_singular: "Button",
-      widget: "list",
-      collapsed: true,
-      summary: "{{fields.label}} | {{fields.href}}",
-      fields: buttons.fields,
-      required: false,
-    },
 
     blocks,
     {
       name: "style",
       label: t("page_style"),
       widget: "object",
-      summary: "{{fields.template}} ",
+      summary: "{{template}} ",
       collapsed: true,
       fields: [
         {
-          name: "template",
-          label: t("template"),
+          name: "nav_color",
+          label: t("nav_color"),
+          hint: t("nav_color_hint"),
           widget: "select",
-          options: ["full", "split"],
-          default: "split",
-        },
-        {
-          name: "hero_template",
-          label: t("hero_template"),
-          widget: "select",
-          options: ["plain", "image"],
-          default: "image",
-          condition: {
-            field: "style.template",
-            value: "full",
-          },
-        },
-
-        {
-          name: "hero_surface",
-          label: t("hero_surface"),
-          multiple: false,
-          widget: "relation",
-          collection: "config",
-          file: "style",
-          search_fields: ["surface.*.name"],
-          display_fields: ["surface.*.name"],
-          value_field: "surface.*.class",
-          options_length: 50,
+          default: "base",
           required: false,
-        },
-        {
-          name: "hero_image_opacity",
-          label: t("hero_image_opacity"),
-          widget: "select",
-          options: [
-            "0.1",
-            "0.2",
-            "0.3",
-            "0.4",
-            "0.5",
-            "0.6",
-            "0.7",
-            "0.8",
-            "0.9",
-            "1",
-          ],
-          default: "80",
-          required: false,
+          options: ["normal", "inverse", "dark", "light"],
         },
 
         {
@@ -145,16 +302,6 @@ export const page = {
           name: "block_class",
           widget: "string",
           required: false,
-        },
-        {
-          label: t("hero_class"),
-          name: "hero_class",
-          widget: "string",
-          required: false,
-          condition: {
-            field: "style.template",
-            value: "full",
-          },
         },
       ],
     },

@@ -6,7 +6,7 @@
 import { watch, ref, onMounted } from "vue";
 import { useWindowSize } from "@vueuse/core";
 import { useDebounceFn } from "@vueuse/core";
-import { showContact } from "@src/store";
+import { showPopup, showDialog } from "@src/store";
 const { width } = useWindowSize();
 const shown = ref(false);
 
@@ -63,34 +63,115 @@ onMounted(() => {
 
   window.addEventListener("scroll", () => scrollHandler(), { passive: true });
   /* PARALLAX ANIMATIONS */
-  const parallaxReveal = document.querySelectorAll(".nebulix-parallax");
+  const parallaxReveal = document.querySelectorAll(".parallax-wrap");
   if (!document.documentElement.dataset.ios) {
     parallaxReveal.forEach((el) => {
-      const img = el.querySelector(".parallax");
+      const items = el.querySelectorAll(".parallax");
 
-      img.animate(
-        {
-          transform: ["none", "translateY(30%)"],
-        },
-        {
-          fill: "both",
-          timeline: new ViewTimeline({ subject: el }),
-          rangeStart: { rangeName: "exit", offset: CSS.percent(5) },
-          rangeEnd: { rangeName: "exit", offset: CSS.percent(100) },
-        },
+      items.forEach((img) =>
+        img.animate(
+          {
+            transform: ["none", "translateY(50%)"],
+          },
+          {
+            fill: "both",
+            timeline: new ViewTimeline({ subject: el }),
+            rangeStart: { rangeName: "exit", offset: CSS.percent(5) },
+            rangeEnd: { rangeName: "exit", offset: CSS.percent(100) },
+          },
+        ),
       );
     });
   }
 
-  /* CONTACT FORM */
-  const contactButtons = document.querySelectorAll("[href='#contact']");
-  contactButtons.forEach((el) => {
+  /* LOGIN FORM */
+  const loginButtons = document.querySelectorAll("[href='#sign-in']");
+  loginButtons.forEach((el) => {
     el.addEventListener("click", (e) => {
       e.preventDefault();
-      showContact.set(true);
+      showDialog.set({
+        show: true,
+        type: "auth",
+        link: "auth",
+        auth: "sign_in",
+      });
+    });
+  });
+
+  /* SIGN UP FORM */
+  const registrationButtons = document.querySelectorAll("[href='#sign-up']");
+  registrationButtons.forEach((el) => {
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      showDialog.set({
+        show: true,
+        type: "auth",
+        link: "auth",
+        auth: "sign_up",
+      });
+    });
+  });
+
+  /* NEWSLETTERS */
+  /* const newsletterForms = document.querySelectorAll("[data-newsletter]");
+
+  newsletterForms.forEach((el) => {
+    const link = el.dataset.newsletter;
+    const newsletterButtons = document.querySelectorAll(`[href='#${link}']`);
+
+    newsletterButtons.forEach((el) => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        showDialog.set({
+          show: true,
+          slug: link,
+          type: "newsletter",
+        });
+      });
+    });
+  }); */
+
+  /* DIALOGS */
+
+  const dialogs = document.querySelectorAll("[data-dialog]");
+
+  dialogs.forEach((el) => {
+    const link = el.dataset.dialog;
+    const type = el.dataset.type;
+    const buttons = document.querySelectorAll(`[href='#${link}']`);
+
+    buttons.forEach((el) => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        showDialog.set({
+          show: true,
+          link: link,
+          type: type,
+        });
+      });
+    });
+  });
+
+  /* POPUPS */
+
+  const popups = document.querySelectorAll("[data-popup]");
+  popups.forEach((el) => {
+    const link = el.dataset.popup;
+    const popupButtons = document.querySelectorAll(`[href='#${link}']`);
+
+    popupButtons.forEach((el) => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        showPopup.set({
+          show: true,
+          type: link,
+        });
+      });
     });
   });
 });
+
 /* CREDITS, PLEASE LEAVE THIS IN PLACE */
 watch(width, (val) => {
   if (!shown.value) {
@@ -98,7 +179,7 @@ watch(width, (val) => {
       "%c ♻️🔋+ 🧠👷🏽+ 🗜 = 🚀🍃🌐" +
         "\n%cThis site has a low carbon footprint " +
         "\n%c🪙CREDITS:" +
-        "\n%cTheme based on Nebulix 🌌" +
+        "\n%cTheme based on StarFunnel 🌌" +
         "\n%cby: https://unfolding.io",
       "font-family:Verdana; font-size: 20px; color: #2A4D47; font-weight:bold; padding: 5px 0; opacity: 0.5; ",
       "font-family:Verdana; font-size: 25px; color: #2A4D47; font-weight:bold; padding: 5px 0; ",

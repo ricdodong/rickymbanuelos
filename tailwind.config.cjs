@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 const plugin = require("tailwindcss/plugin");
+
 module.exports = {
   darkMode: ["class", '[data-theme="dark"]'],
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
@@ -17,8 +18,8 @@ module.exports = {
         info: "rgb(var(--color-info) / <alpha-value>)",
       },
       fontFamily: {
-        sans: ["'Inter Tight Variable'", "Helvetica", "Verdana", "sans-serif"],
-        body: ["'Inter Tight Variable'", "Helvetica", "Verdana", "sans-serif"],
+        sans: ["'DM Sans Variable'", "Helvetica", "Verdana", "sans-serif"],
+        body: ["'DM Sans Variable'", "Helvetica", "Verdana", "sans-serif"],
       },
       boxShadow: {
         inset: " inset 2px 2px 40px -20px rgba(0, 0, 0, 0.3)",
@@ -26,6 +27,11 @@ module.exports = {
       },
       screens: {
         xs: "500px",
+      },
+      aspectRatio: {
+        "5/4": "5 / 4",
+        "4/5": "4 / 5",
+        "9/16": "9 / 16",
       },
     },
   },

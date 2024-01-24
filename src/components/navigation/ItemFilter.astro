@@ -4,7 +4,7 @@ import { slugify } from "@util/helpers";
 ---
 
 <div
-  class={`inline-flex md:flex gap-2 flex-wrap ${className ? className : ""}`}
+  class={`inline-flex md:flex gap-4 flex-wrap ${className ? className : ""}`}
 >
   {
     !!links &&
@@ -13,17 +13,18 @@ import { slugify } from "@util/helpers";
           href={`/${base_url}${
             filter === active ? "" : `/${type || "tag"}/${slugify(filter)}`
           }`}
-          class={`block rounded-md px-2 py-0.5 text-xs uppercase tracking-widest transition-all duration-300 hover:bg-opacity-60 hover:underline
-						${filter == active ? "underline" : ""} `}
+          data-replace={filter}
+          class={`btn-replace pb-1 text-xs uppercase tracking-widest  
+						${filter == active ? "font-bold" : ""} `}
         >
-          {filter}
+          <span>{filter}</span>
         </a>
       ))
   }
   {
     !links &&
       filters.map((filter) => (
-        <span class=" block py-0.5 text-xs uppercase tracking-widest opacity-90">
+        <span class=" surface-secondary block rounded-md px-2 py-0.5 text-xs uppercase tracking-widest opacity-90">
           {filter}
         </span>
       ))

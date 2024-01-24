@@ -1,4 +1,4 @@
-import { toolbarButtons, style, buttons, blocks } from "./common.mjs";
+import { toolbarButtons, style, buttons } from "./common.mjs";
 import { t } from "@util/translate";
 export const post = {
   name: "posts",
@@ -56,18 +56,6 @@ export const post = {
       show_raw: true,
     },
 
-    {
-      name: "hero_buttons",
-      label: t("hero_buttons"),
-      label_singular: "Button",
-      widget: "list",
-      collapsed: true,
-      summary: "{{fields.label}} | {{fields.href}}",
-      fields: buttons.fields,
-      required: false,
-    },
-
-    blocks,
     style,
     {
       label: t("pub_date"),
