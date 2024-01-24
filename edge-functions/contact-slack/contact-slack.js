@@ -1,4 +1,4 @@
-import { encode } from "https://deno.land/std/encoding/base64.ts";
+import * as mod from "https://deno.land/std@0.212.0/encoding/base64.ts";
 
 const { SLACK_CHANNEL_ID, SLACK_TOKEN } = Deno.env.toObject();
 
