@@ -1,4 +1,4 @@
-import * as mod from "https://deno.land/std@0.212.0/encoding/base64.ts";
+import { encodeBase64 } from "https://deno.land/std@0.212.0/encoding/base64.ts";
 
 let {
   MAILGUN_API_KEY,
