@@ -1,8 +1,8 @@
 {
-  "name": "starfunnel",
+  "name": "rickysblog",
   "type": "module",
   "license": "CC BY-ND 4.0",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "keywords": [
     "astro",
     "Static CMS",
@@ -10,7 +10,7 @@
     "mdx",
     "markdown"
   ],
-  "description": "Fast & Green Sales Funnel Theme Based on Astro + Static CMS. ",
+  "description": "Personal Blog",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",

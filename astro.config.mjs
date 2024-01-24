@@ -22,7 +22,7 @@ const m2dxOptions = {
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://starfunnel.unfolding.io",
+  site: "https://rickymbanuelos.click",
   integrations: [
     icon(),
     mdx({}),
